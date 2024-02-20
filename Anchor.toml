@@ -1,0 +1,21 @@
+[features]
+seeds = false
+skip-lint = false
+#[programs.localnet]
+[programs.devnet]
+car_project = "7Pq5TUjE35aTii9LRBDZAAsFH66Zwi8AVuf1KxmoH2qZ"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+#cluster = "Localnet"
+cluster = "devnet"
+wallet = "/Users/aoi/.config/solana/id.json"
+
+[scripts]
+test = "node tests/car_project.js"
+
+
+[test]
+startup_wait = 10000
