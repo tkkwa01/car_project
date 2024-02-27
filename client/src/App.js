@@ -2,15 +2,16 @@ import React, { useEffect, useState } from 'react';
 import * as anchor from '@project-serum/anchor';
 import { Connection, PublicKey, SystemProgram } from '@solana/web3.js';
 import idl from './idl.json';
-import { Buffer } from 'buffer';
-window.Buffer = Buffer;
+
+// Buffer globalを設定（Phantom Wallet使用時に必要な場合があります）
+window.Buffer = window.Buffer || require('buffer').Buffer;
 
 // Solanaネットワーク設定
 const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
 
 // スマートコントラクトのプログラムID
-const programId = new PublicKey("vYwntHTfMyfyzMkc2r5XzmGxuWagLCdb555LfVcukLs");
+const programId = new PublicKey("GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf");
 
 const App = () => {
   const [wallet, setWallet] = useState(null);
@@ -24,13 +25,11 @@ const App = () => {
     const checkWalletConnection = async () => {
       if (window.solana && window.solana.isPhantom) {
         setWallet(window.solana);
-        if (!window.solana.connected) {
-          try {
-            await window.solana.connect({ onlyIfTrusted: true });
-          } catch (error) {
-            console.error("ウォレット接続エラー:", error);
-            setMessage("ウォレットの接続に失敗しました。");
-          }
+        try {
+          await window.solana.connect({ onlyIfTrusted: true });
+        } catch (error) {
+          console.error("ウォレット接続エラー:", error);
+          setMessage("ウォレットの接続に失敗しました。");
         }
       }
     };
@@ -48,15 +47,21 @@ const App = () => {
 
     try {
       const transactionAccount = anchor.web3.Keypair.generate();
-      const repairPartsArray = repairParts.split(",").map(part => part.trim());
-      await program.rpc.createTransaction(new anchor.BN(100), company, carNumber, repairPartsArray, {
-        accounts: {
-          transaction: transactionAccount.publicKey,
-          user: provider.wallet.publicKey,
-          systemProgram: SystemProgram.programId,
-        },
-        signers: [transactionAccount],
-      });
+
+      await program.rpc.createTransaction(
+          new anchor.BN(100), // amount
+          company,
+          carNumber,
+          repairParts, // 修理箇所のリストをそのまま渡す
+          {
+            accounts: {
+              transaction: transactionAccount.publicKey,
+              user: provider.wallet.publicKey,
+              systemProgram: SystemProgram.programId,
+            },
+            signers: [transactionAccount],
+          }
+      );
 
       setMessage("トランザクションが正常に作成されました。公開鍵: " + transactionAccount.publicKey.toString());
       setTransactionPublicKey(transactionAccount.publicKey.toString());
@@ -78,10 +83,9 @@ const App = () => {
       await program.rpc.approveTransaction({
         accounts: {
           transaction: new PublicKey(transactionPublicKey),
+          user: provider.wallet.publicKey, // approveTransaction関数にuserアカウントを追加
         },
-      }).then((res) => {
-        console.log(res);
-        });
+      });
 
       setMessage("トランザクションが正常に承認されました。");
     } catch (error) {
