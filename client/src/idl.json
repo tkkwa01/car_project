@@ -25,6 +25,20 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "company",
+          "type": "string"
+        },
+        {
+          "name": "carNumber",
+          "type": "string"
+        },
+        {
+          "name": "repairParts",
+          "type": {
+            "vec": "string"
+          }
         }
       ]
     },
@@ -51,6 +65,20 @@
             "type": "u64"
           },
           {
+            "name": "company",
+            "type": "string"
+          },
+          {
+            "name": "carNumber",
+            "type": "string"
+          },
+          {
+            "name": "repairParts",
+            "type": {
+              "vec": "string"
+            }
+          },
+          {
             "name": "approved",
             "type": "bool"
           }
@@ -59,6 +87,6 @@
     }
   ],
   "metadata": {
-    "address": "7eKPuThDEw6ihRq1fy1FC7kM6ffgs9jGjr6R9DYzyGir"
+    "address": "vYwntHTfMyfyzMkc2r5XzmGxuWagLCdb555LfVcukLs"
   }
 }
