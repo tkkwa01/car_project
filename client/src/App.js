@@ -26,7 +26,7 @@ const App = () => {
         setWallet(window.solana);
         if (!window.solana.connected) {
           try {
-            await window.solana.connect({ onlyIfTrusted: true });
+            await window.solana.connect({ onlyIfTrusted: false });
           } catch (error) {
             console.error("ウォレット接続エラー:", error);
             setMessage("ウォレットの接続に失敗しました。");
