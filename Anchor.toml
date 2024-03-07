@@ -3,7 +3,7 @@ seeds = false
 skip-lint = false
 #[programs.localnet]
 [programs.devnet]
-car_project = "GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf"
+car_project = "DvgRX58pRNKfnjXQ1HQj7CzimoLE6hW4MynY1knGfVGh"
 
 [registry]
 url = "https://api.apr.dev"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import * as anchor from '@project-serum/anchor';
 import { PublicKey, SystemProgram } from '@solana/web3.js';
 import idl from '../idl.json';
+import { useWallet } from '@solana/wallet-adapter-react';
 
 // Buffer globalを設定（Phantom Wallet使用時に必要な場合があります）
 window.Buffer = window.Buffer || require('buffer').Buffer;
@@ -11,35 +12,17 @@ const network = "https://api.devnet.solana.com";
 const connection = new anchor.web3.Connection(network, "processed");
 
 // スマートコントラクトのプログラムID
-const programId = new PublicKey("GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf");
+const programId = new PublicKey("DvgRX58pRNKfnjXQ1HQj7CzimoLE6hW4MynY1knGfVGh");
 
 export const CreateTransaction = () => {
-    const [wallet, setWallet] = useState(null);
+    const wallet = useWallet();
     const [company, setCompany] = useState("");
     const [carNumber, setCarNumber] = useState("");
     const [repairParts, setRepairParts] = useState("");
     const [message, setMessage] = useState("");
 
-    useEffect(() => {
-        const checkWalletConnection = async () => {
-            if (window.solana && window.solana.isPhantom) {
-                try {
-                    const response = await window.solana.connect({ onlyIfTrusted: false });
-                    setWallet(response);
-                } catch (error) {
-                    console.error("ウォレット接続エラー:", error);
-                    setMessage("ウォレットの接続に失敗しました。");
-                }
-            } else {
-                setMessage("Phantom Walletがインストールされていません。");
-            }
-        };
-
-        checkWalletConnection();
-    }, []);
-
     const createTransaction = async () => {
-        if (!wallet) {
+        if (!wallet.connected) {
             setMessage("ウォレットが接続されていません。");
             return;
         }
@@ -47,12 +30,15 @@ export const CreateTransaction = () => {
         const program = new anchor.Program(idl, programId, provider);
         const transactionAccount = anchor.web3.Keypair.generate();
 
+        // 修理箇所の文字列を配列に変換
+        const repairPartsArray = repairParts.split(',').map(part => part.trim());
+
         try {
             await program.rpc.createTransaction(
                 new anchor.BN(100), // amount
                 company,
                 carNumber,
-                repairParts, // 修理箇所のリストをそのまま渡す
+                repairPartsArray, // 修理箇所の配列を渡す
                 {
                     accounts: {
                         transaction: transactionAccount.publicKey,

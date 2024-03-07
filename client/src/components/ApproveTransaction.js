@@ -7,7 +7,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 // SolanaネットワークとプログラムID設定
 const network = "https://api.devnet.solana.com";
 const connection = new anchor.web3.Connection(network, "processed");
-const programId = new PublicKey("GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf");
+const programId = new PublicKey("DvgRX58pRNKfnjXQ1HQj7CzimoLE6hW4MynY1knGfVGh");
 
 export const ApproveTransaction = () => {
     const wallet = useWallet();

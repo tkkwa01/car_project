@@ -36,7 +36,9 @@
         },
         {
           "name": "repairParts",
-          "type": "string"
+          "type": {
+            "vec": "string"
+          }
         }
       ]
     },
@@ -77,7 +79,9 @@
           },
           {
             "name": "repairParts",
-            "type": "string"
+            "type": {
+              "vec": "string"
+            }
           },
           {
             "name": "issuerPubkey",
@@ -105,6 +109,6 @@
     }
   ],
   "metadata": {
-    "address": "GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf"
+    "address": "DvgRX58pRNKfnjXQ1HQj7CzimoLE6hW4MynY1knGfVGh"
   }
 }

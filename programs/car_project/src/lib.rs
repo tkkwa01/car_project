@@ -1,7 +1,7 @@
 use std::str::FromStr;
 use anchor_lang::prelude::*;
 
-declare_id!("GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf");
+declare_id!("DvgRX58pRNKfnjXQ1HQj7CzimoLE6hW4MynY1knGfVGh");
 
 const ADMIN_PUBKEY: &str = "7CYKoDPjeyMJ1r34ZbcHsRYGGvF6MXBLaWF6nUrP1KQU";
 
@@ -64,34 +64,4 @@ pub struct ApproveTransaction<'info> {
 pub enum ErrorCode {
     #[msg("You are not authorized to approve transactions.")]
     Unauthorized,
-}
-
-#[derive(Accounts)]
-pub struct GetTransactionDetails<'info> {
-    #[account(
-    // アカウントの署名または検証に使用される特定のキーをここで指定します。
-    // この場合、Constraint::addressを利用して特定のアカウントを動的に参照します。
-    )]
-    pub transaction: Account<'info, Transaction>,
-}
-
-pub fn get_transaction_details(ctx: Context<GetTransactionDetails>, transaction_pubkey: Pubkey) -> Result<()> {
-    // ここでは、transaction_pubkeyを直接参照しません。
-    // 代わりに、Contextからtransactionアカウントを直接利用します。
-    // アカウントの検証は、関数を呼び出す際にanchorが行います。
-
-    let transaction = &ctx.accounts.transaction;
-    msg!("依頼会社: {}", transaction.company);
-    msg!("車台番号: {}", transaction.car_number);
-    for part in &transaction.repair_parts {
-        msg!("修理箇所: {}", part);
-    }
-    Ok(())
-}
-
-#[account]
-pub struct TransactionData {
-    pub company: String,
-    pub car_number: String,
-    pub repair_parts: Vec<String>,
 }
