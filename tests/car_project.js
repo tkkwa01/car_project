@@ -3,31 +3,37 @@ const anchor = require("@project-serum/anchor");
 const { SystemProgram } = anchor.web3;
 
 const main = async() => {
-    // Anchorのプロバイダーを設定
     const provider = anchor.AnchorProvider.env();
-
     anchor.setProvider(provider);
 
     const program = anchor.workspace.CarProject;
-
-    // トランザクションアカウントのキーペアを生成
     const transactionAccount = anchor.web3.Keypair.generate();
 
-    // トランザクションの作成
-    await program.rpc.createTransaction(new anchor.BN(100), {
-        accounts: {
-            transaction: transactionAccount.publicKey,
-            user: provider.wallet.publicKey,
-            systemProgram: SystemProgram.programId,
-        },
-        signers: [transactionAccount],
-    });
+    // トランザクションの作成に必要な追加の引数を含む
+    await program.rpc.createTransaction(
+        new anchor.BN(100), "CompanyA", "CAR123", ["Wheel", "BrakePad"], {
+            accounts: {
+                transaction: transactionAccount.publicKey,
+                user: provider.wallet.publicKey,
+                systemProgram: SystemProgram.programId,
+            },
+            signers: [transactionAccount],
+        });
 
     // トランザクションのデータを取得し、検証
     let transaction = await program.account.transaction.fetch(
         transactionAccount.publicKey
     );
+
+    // トランザクションの全内容を確認
+    console.log(JSON.stringify(transaction, null, 2));
+
     assert.ok(transaction.amount.eq(new anchor.BN(100)));
+    assert.ok(transaction.company === "CompanyA");
+    assert.ok(transaction.carNumber === "CAR123");
+    assert.ok(transaction.repairParts.length === 2);
+    assert.ok(transaction.repairParts.includes("Wheel"));
+    assert.ok(transaction.repairParts.includes("BrakePad"));
     assert.ok(transaction.approved === false);
 
     // トランザクションの承認
@@ -43,6 +49,7 @@ const main = async() => {
     );
     assert.ok(transaction.approved === true);
 };
+
 const runMain = async () => {
     try {
         await main();
