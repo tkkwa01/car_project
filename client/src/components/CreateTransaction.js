@@ -19,13 +19,36 @@ export const CreateTransaction = () => {
     const [carNumber, setCarNumber] = useState("");
     const [repairParts, setRepairParts] = useState("");
 
+    class CustomWallet {
+        constructor(solanaWallet) {
+            this.solanaWallet = solanaWallet;
+        }
+
+        async signTransaction(tx) {
+            console.log("Attempting to sign transaction", tx);
+            if (typeof this.solanaWallet.signTransaction === "function") {
+                return await this.solanaWallet.signTransaction(tx);
+            } else {
+                throw new Error("signTransaction is not a function in the provided wallet object.");
+            }
+        }
+
+        // 必要に応じて、get publicKey() を含める
+        get publicKey() {
+            return this.solanaWallet.publicKey;
+        }
+    }
+
+
     useEffect(() => {
         // Phantom Wallet接続チェック
         const checkWalletConnection = async () => {
             if (window.solana && window.solana.isPhantom) {
                 try {
-                    const response = await window.solana.connect({ onlyIfTrusted: false });
-                    setWallet(response);
+                    await window.solana.connect({ onlyIfTrusted: false });
+                    // CustomWalletを使用してウォレットオブジェクトをラップ
+                    const wrappedWallet = new CustomWallet(window.solana);
+                    setWallet(wrappedWallet);
                     setMessage("ウォレットが接続されました。");
                 } catch (error) {
                     console.error("ウォレット接続エラー:", error);
@@ -39,34 +62,48 @@ export const CreateTransaction = () => {
         checkWalletConnection();
     }, []);
 
+
+// CreateTransaction.jsの改変部分
+
     const createTransaction = async () => {
         if (!wallet) {
             setMessage("ウォレットが接続されていません。");
             return;
         }
 
-        const provider = new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
-        const program = new anchor.Program(idl, programId, provider);
-
         try {
+            // 1. ProviderとProgramの初期化
+            const provider = new anchor.AnchorProvider(connection, wallet, anchor.AnchorProvider.defaultOptions());
+            const program = new anchor.Program(idl, programId, provider);
+
+            // 2. 新しいトランザクションアカウントの生成
             const transactionAccount = anchor.web3.Keypair.generate();
+
+            // 3. トランザクションデータの準備
             const repairPartsArray = repairParts.split(",").map(part => part.trim());
 
-            await program.rpc.createTransaction(new anchor.BN(100), company, carNumber, repairPartsArray, {
-                accounts: {
-                    transaction: transactionAccount.publicKey,
-                    user: provider.wallet.publicKey,
-                    systemProgram: SystemProgram.programId,
-                },
-                signers: [transactionAccount],
-            });
+            // 4. トランザクションの作成と送信
+            const transaction = await program.rpc.createTransaction(
+            new anchor.BN(100), company, carNumber, repairPartsArray, {
+                    accounts: {
+                        transaction: transactionAccount.publicKey,
+                        user: provider.wallet.publicKey,
+                        systemProgram: SystemProgram.programId,
+                    },
+                    signers: [transactionAccount],
+                }
+            );
+            console.log("Using user publicKey:", provider.wallet.publicKey.toString());
 
-            setMessage("トランザクションが正常に作成されました。公開鍵: " + transactionAccount.publicKey.toString());
+            // 5. トランザクションID（シグネチャ）の表示
+            console.log("トランザクションID:", transaction);
+            setMessage(`トランザクションが正常に作成されました。トランザクションID: ${transaction}`);
         } catch (error) {
             console.error("トランザクション作成エラー:", error);
             setMessage("トランザクションの作成に失敗しました。");
         }
     };
+
 
     return (
         <div>
