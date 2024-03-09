@@ -23,20 +23,21 @@ const App = () => {
   useEffect(() => {
     const checkWalletConnection = async () => {
       if (window.solana && window.solana.isPhantom) {
-        setWallet(window.solana);
-        if (!window.solana.connected) {
-          try {
-            await window.solana.connect({ onlyIfTrusted: false });
-          } catch (error) {
-            console.error("ウォレット接続エラー:", error);
-            setMessage("ウォレットの接続に失敗しました。");
-          }
+        try {
+          await window.solana.connect({ onlyIfTrusted: false });
+          console.log("Connected wallet:", window.solana);
+          setWallet(window.solana);
+        } catch (error) {
+          console.error("ウォレット接続エラー:", error);
         }
+      } else {
+        console.log("Phantom wallet not found");
       }
     };
 
     checkWalletConnection();
   }, []);
+
 
   const createTransaction = async () => {
     if (!wallet) {
