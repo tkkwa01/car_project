@@ -62,9 +62,6 @@ export const CreateTransaction = () => {
         checkWalletConnection();
     }, []);
 
-
-// CreateTransaction.jsの改変部分
-
     const createTransaction = async () => {
         if (!wallet) {
             setMessage("ウォレットが接続されていません。");
@@ -94,10 +91,12 @@ export const CreateTransaction = () => {
                 }
             );
             console.log("Using user publicKey:", provider.wallet.publicKey.toString());
+            console.log("Using transaction publicKey:", transactionAccount.publicKey.toString());
 
             // 5. トランザクションID（シグネチャ）の表示
             console.log("トランザクションID:", transaction);
             setMessage(`トランザクションが正常に作成されました。トランザクションID: ${transaction}`);
+            setMessage(`トランザクションが正常に作成されました。トランザクション公開鍵: ${transactionAccount.publicKey.toString()}`);
         } catch (error) {
             console.error("トランザクション作成エラー:", error);
             setMessage("トランザクションの作成に失敗しました。");
