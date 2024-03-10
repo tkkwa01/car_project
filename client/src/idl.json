@@ -36,9 +36,7 @@
         },
         {
           "name": "repairParts",
-          "type": {
-            "vec": "string"
-          }
+          "type": "string"
         }
       ]
     },
@@ -47,8 +45,13 @@
       "accounts": [
         {
           "name": "transaction",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
+        },
+        {
+          "name": "user",
+          "isMut": false,
+          "isSigner": true
         }
       ],
       "args": []
@@ -74,13 +77,28 @@
           },
           {
             "name": "repairParts",
-            "type": {
-              "vec": "string"
-            }
+            "type": "string"
+          },
+          {
+            "name": "issuerPubkey",
+            "type": "publicKey"
           },
           {
             "name": "approved",
             "type": "bool"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "ErrorCode",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Unauthorized"
           }
         ]
       }

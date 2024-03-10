@@ -1,3 +1,4 @@
+use std::str::FromStr;
 use anchor_lang::prelude::*;
 
 declare_id!("CGME1zN4NXctYJkLgorYZg3RHzYM8vTcb7CnouTqeR8S");
@@ -11,10 +12,18 @@ pub mod car_project {
         transaction.approved = false;
         Ok(())
     }
-
     pub fn approve_transaction(ctx: Context<ApproveTransaction>) -> Result<()> {
         let transaction = &mut ctx.accounts.transaction;
+
+        // 管理者の確認
+        let admin_pubkey = Pubkey::from_str(ADMIN_PUBKEY).unwrap();
+        if ctx.accounts.user.to_account_info().key != &admin_pubkey {
+            return Err(ErrorCode::Unauthorized.into());
+        }
+
+        // トランザクションの承認
         transaction.approved = true;
+
         Ok(())
     }
 }
@@ -37,6 +46,12 @@ pub struct CreateTransaction<'info> {
 
 #[derive(Accounts)]
 pub struct ApproveTransaction<'info> {
-    #[account(mut)]
     pub transaction: Account<'info, Transaction>,
+    pub user: Signer<'info>, // この場合、userは管理者である必要がある
+}
+
+#[error_code]
+pub enum ErrorCode {
+    #[msg("You are not authorized to approve transactions.")]
+    Unauthorized,
 }
