@@ -11,7 +11,20 @@ const main = async() => {
 
     // トランザクションの作成に必要な追加の引数を含む
     await program.rpc.createTransaction(
-        new anchor.BN(100), "CompanyA", "CAR123", ["Wheel", "BrakePad"], {
+        new anchor.BN(100), "{\n" +
+        "  \"pubkey\": \"7tGPzo2HpJH9BD9aihSYXrQSzrNUr7ic9iGxnvgGd4K\",\n" +
+        "  \"account\": {\n" +
+        "    \"lamports\": 6848640,\n" +
+        "    \"data\": [\n" +
+        "      \"AAA\",\n" +
+        "      \"base64\"\n" +
+        "    ],\n" +
+        "    \"owner\": \"vYwntHTfMyfyzMkc2r5XzmGxuWagLCdb555LfVcukLs\",\n" +
+        "    \"executable\": false,\n" +
+        "    \"rentEpoch\": 18446744073709551615,\n" +
+        "    \"space\": 856\n" +
+        "  }\n" +
+        "}", {
             accounts: {
                 transaction: transactionAccount.publicKey,
                 user: provider.wallet.publicKey,
@@ -29,11 +42,20 @@ const main = async() => {
     console.log(JSON.stringify(transaction, null, 2));
 
     assert.ok(transaction.amount.eq(new anchor.BN(100)));
-    assert.ok(transaction.company === "CompanyA");
-    assert.ok(transaction.carNumber === "CAR123");
-    assert.ok(transaction.repairParts.length === 2);
-    assert.ok(transaction.repairParts.includes("Wheel"));
-    assert.ok(transaction.repairParts.includes("BrakePad"));
+    assert.ok(transaction.json === "{\n" +
+        "  \"pubkey\": \"7tGPzo2HpJH9BD9aihSYXrQSzrNUr7ic9iGxnvgGd4K\",\n" +
+        "  \"account\": {\n" +
+        "    \"lamports\": 6848640,\n" +
+        "    \"data\": [\n" +
+        "      \"AAA\",\n" +
+        "      \"base64\"\n" +
+        "    ],\n" +
+        "    \"owner\": \"vYwntHTfMyfyzMkc2r5XzmGxuWagLCdb555LfVcukLs\",\n" +
+        "    \"executable\": false,\n" +
+        "    \"rentEpoch\": 18446744073709551615,\n" +
+        "    \"space\": 856\n" +
+        "  }\n" +
+        "}");
     assert.ok(transaction.approved === false);
 
     // トランザクションの承認
