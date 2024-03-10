@@ -5,7 +5,7 @@ import idl from '../idl.json';
 import { Buffer } from 'buffer';
 window.Buffer = Buffer;
 
-// Solanaネットワーク設定
+// Solanaネットワーク設定fff
 const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
 
