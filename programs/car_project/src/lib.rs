@@ -1,21 +1,14 @@
 use std::str::FromStr;
 use anchor_lang::prelude::*;
 
-declare_id!("GVtEzi8bJyHLUpWEMqXxMeW5ij7a13NbtiXXuqeZUJAf");
-
-const ADMIN_PUBKEY: &str = "7CYKoDPjeyMJ1r34ZbcHsRYGGvF6MXBLaWF6nUrP1KQU";
-
+declare_id!("CGME1zN4NXctYJkLgorYZg3RHzYM8vTcb7CnouTqeR8S");
 #[program]
 pub mod car_project {
     use super::*;
-
-    pub fn create_transaction(ctx: Context<CreateTransaction>, amount: u64, company: String, car_number: String, repair_parts: String) -> Result<()> {
+    pub fn create_transaction(ctx: Context<CreateTransaction>, amount: u64, json: String) -> Result<()> {
         let transaction = &mut ctx.accounts.transaction;
         transaction.amount = amount;
-        transaction.company = company;
-        transaction.car_number = car_number;
-        transaction.repair_parts = repair_parts;
-        transaction.issuer_pubkey = *ctx.accounts.user.to_account_info().key; // 業者の公開鍵をセット
+        transaction.json = json;
         transaction.approved = false;
         Ok(())
     }
@@ -38,16 +31,13 @@ pub mod car_project {
 #[account]
 pub struct Transaction {
     pub amount: u64,
-    pub company: String,
-    pub car_number: String,
-    pub repair_parts: String,
-    pub issuer_pubkey: Pubkey, // 業者の公開鍵
+    pub json: String,
     pub approved: bool,
 }
 
 #[derive(Accounts)]
 pub struct CreateTransaction<'info> {
-    #[account(init, payer = user, space = 8 + 64 + 32 + 32 + 256 + 32 + 1)]
+    #[account(init, payer = user, space = 8 + 4 + 298 + 8 + 1)]
     pub transaction: Account<'info, Transaction>,
     #[account(mut)]
     pub user: Signer<'info>,
