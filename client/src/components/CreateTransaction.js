@@ -10,7 +10,7 @@ const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
 
 // スマートコントラクトのプログラムID
-const programId = new PublicKey("BnzBZtry7z54hcP3gUDTbHtFyKbYmDBxzrRKvqXF55HH");
+const programId = new PublicKey("BzuhzvGS4yqCofwtpHvZgRw4muL421DhkmNEZ5kbejJF");
 
 export const CreateTransaction = () => {
     const [wallet, setWallet] = useState(null);
