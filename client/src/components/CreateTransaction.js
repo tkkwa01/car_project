@@ -10,7 +10,7 @@ const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
 
 // スマートコントラクトのプログラムID
-const programId = new PublicKey("BzuhzvGS4yqCofwtpHvZgRw4muL421DhkmNEZ5kbejJF");
+const programId = new PublicKey("6ViydzxXuvE2GJhVxim49BAvtx2wL8PQyA9JreJgLMdm");
 
 export const CreateTransaction = () => {
     const [wallet, setWallet] = useState(null);
@@ -106,7 +106,7 @@ export const CreateTransaction = () => {
                 value={json}
                 onChange={(e) => setJson(e.target.value)}
                 placeholder="jsonデータ"
-                style={{ width: '50%', height: '200px' }}
+                style={{ width: '80%', height: '200px' }}
             />
             <button onClick={createTransaction}>トランザクションを作成</button>
         </div>

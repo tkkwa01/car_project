@@ -5,7 +5,7 @@ import idl from '../idl.json';
 
 const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
-const programId = new PublicKey("BzuhzvGS4yqCofwtpHvZgRw4muL421DhkmNEZ5kbejJF");
+const programId = new PublicKey("6ViydzxXuvE2GJhVxim49BAvtx2wL8PQyA9JreJgLMdm");
 export const ApproveTransaction = () => {
     const [wallet, setWallet] = useState(null);
     const [transactionPublicKey, setTransactionPublicKey] = useState("");

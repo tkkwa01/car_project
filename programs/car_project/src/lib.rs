@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("BzuhzvGS4yqCofwtpHvZgRw4muL421DhkmNEZ5kbejJF");
+declare_id!("6ViydzxXuvE2GJhVxim49BAvtx2wL8PQyA9JreJgLMdm");
 #[program]
 pub mod car_project {
     use super::*;
@@ -28,7 +28,7 @@ pub struct Transaction {
 
 #[derive(Accounts)]
 pub struct CreateTransaction<'info> {
-    #[account(init, payer = user, space = 4096)]
+    #[account(init, payer = user, space = 10240)]
     pub transaction: Account<'info, Transaction>,
     #[account(mut)]
     pub user: Signer<'info>,

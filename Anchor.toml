@@ -4,7 +4,7 @@ skip-lint = false
 #[programs.localnet]
 [programs.devnet]
 
-car_project = "BzuhzvGS4yqCofwtpHvZgRw4muL421DhkmNEZ5kbejJF"
+car_project = "6ViydzxXuvE2GJhVxim49BAvtx2wL8PQyA9JreJgLMdm"
 
 [registry]
 url = "https://api.apr.dev"
