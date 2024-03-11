@@ -7,9 +7,26 @@ export function AccountFetcher() {
     const [fetchError, setFetchError] = useState('');
 
     const decodeData = (encodedData) => {
-        const prefixRemoved = encodedData.replace('Cxiugct18hdk', '');
-        const buffer = Buffer.from(prefixRemoved, 'base64');
-        return buffer.toString('utf-8');
+        try {
+            const prefixRemoved = encodedData.replace('Cxiugct18hdk', '');
+            const buffer = Buffer.from(prefixRemoved, 'base64');
+            let decodedString = buffer.toString('utf-8');
+
+            // 不要な文字や制御文字を除去し、JSON形式に近い部分を抽出する正規表現
+            const jsonRegex = /{.*}/;
+            const found = decodedString.match(jsonRegex);
+
+            if (found) {
+                const json = JSON.parse(found[0]);
+                console.log(json);
+                return JSON.stringify(json, null, 2); // 整形して返す
+            } else {
+                throw new Error('有効なJSONデータが見つかりませんでした。');
+            }
+        } catch (error) {
+            console.error('データのデコードまたはパース中にエラーが発生しました:', error);
+            return `データのデコードまたはパース中にエラーが発生しました。エラー: ${error.message}`;
+        }
     };
 
     const fetchAccountInfo = async () => {

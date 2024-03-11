@@ -27,18 +27,8 @@
           "type": "u64"
         },
         {
-          "name": "company",
+          "name": "json",
           "type": "string"
-        },
-        {
-          "name": "carNumber",
-          "type": "string"
-        },
-        {
-          "name": "repairParts",
-          "type": {
-            "vec": "string"
-          }
         }
       ]
     },
@@ -65,18 +55,8 @@
             "type": "u64"
           },
           {
-            "name": "company",
+            "name": "json",
             "type": "string"
-          },
-          {
-            "name": "carNumber",
-            "type": "string"
-          },
-          {
-            "name": "repairParts",
-            "type": {
-              "vec": "string"
-            }
           },
           {
             "name": "approved",
@@ -87,6 +67,6 @@
     }
   ],
   "metadata": {
-    "address": "4WnWM81QGcZo5iUs3dj9BtJX1ZcEPgNbaDtgjdkCKY5A"
+    "address": "BnzBZtry7z54hcP3gUDTbHtFyKbYmDBxzrRKvqXF55HH"
   }
 }

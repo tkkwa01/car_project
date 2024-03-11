@@ -10,14 +10,12 @@ const network = "https://api.devnet.solana.com";
 const connection = new Connection(network, "processed");
 
 // スマートコントラクトのプログラムID
-const programId = new PublicKey("4WnWM81QGcZo5iUs3dj9BtJX1ZcEPgNbaDtgjdkCKY5A");
+const programId = new PublicKey("BnzBZtry7z54hcP3gUDTbHtFyKbYmDBxzrRKvqXF55HH");
 
 export const CreateTransaction = () => {
     const [wallet, setWallet] = useState(null);
     const [message, setMessage] = useState("");
-    const [company, setCompany] = useState("");
-    const [carNumber, setCarNumber] = useState("");
-    const [repairParts, setRepairParts] = useState("");
+    const [json, setJson] = useState("");
 
     class CustomWallet {
         constructor(solanaWallet) {
@@ -76,12 +74,9 @@ export const CreateTransaction = () => {
             // 2. 新しいトランザクションアカウントの生成
             const transactionAccount = anchor.web3.Keypair.generate();
 
-            // 3. トランザクションデータの準備
-            const repairPartsArray = repairParts.split(",").map(part => part.trim());
-
             // 4. トランザクションの作成と送信
             const transaction = await program.rpc.createTransaction(
-            new anchor.BN(100), company, carNumber, repairPartsArray, {
+            new anchor.BN(100), json, {
                     accounts: {
                         transaction: transactionAccount.publicKey,
                         user: provider.wallet.publicKey,
@@ -107,20 +102,11 @@ export const CreateTransaction = () => {
     return (
         <div>
             <p>{message}</p>
-            <input
-                value={company}
-                onChange={(e) => setCompany(e.target.value)}
-                placeholder="依頼会社"
-            />
-            <input
-                value={carNumber}
-                onChange={(e) => setCarNumber(e.target.value)}
-                placeholder="車台番号"
-            />
-            <input
-                value={repairParts}
-                onChange={(e) => setRepairParts(e.target.value)}
-                placeholder="修理箇所（カンマ区切り）"
+            <textarea
+                value={json}
+                onChange={(e) => setJson(e.target.value)}
+                placeholder="jsonデータ"
+                style={{ width: '50%', height: '200px' }}
             />
             <button onClick={createTransaction}>トランザクションを作成</button>
         </div>
